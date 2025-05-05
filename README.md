@@ -4,6 +4,20 @@ The following script aims to analyze exons obtained by target capture sequencing
 
 Citation: Paz-Sedano S., Valdes A., Stout C.C., Feliciano K., Muro S., Wilson N., Layton K., Goodheart J.A. 202X. Assessing the limits of exon capture efficiency for phylogenomics, using nudibranch gastropods (Mollusca: Heterobranchia) as a case study. 
 
+## REQUIREMENTS
+The following analyses requires the installation of: 
+- Trimmomatic
+- Hybpiper https://github.com/mossmatters/HybPiper
+- Trimal
+- IQtree http://www.iqtree.org
+
+Software required for the analyses was managed and installed using Conda
+Installing HybPiper using conda with a new environment will install HybPiper, all required Python packages, and all required external programs. If you have conda installed and the channels bioconda and conda-forge have already been added, this can be done using the command:
+      conda install -c bioconda trimmomatic
+      conda create -n hybpiper hybpiper
+      conda install bioconda::trimal
+      conda install bioconda::iqtree
+
 ## TRIMMOMATIC
 Trimmomatic v0.36 (Bolger, Lohse, & Usadel, 2014) was used to remove adapter sequences, exon capture reads with a quality score below 15 in a 4-bp sliding window, and reads shorter than 26 bp.
 
