@@ -1,6 +1,8 @@
-# SCRIPTS FOR TARGET CAPTURE ANALYSES
+# TARGET CAPTURE ANALYSES
 ## ABOUT
-ABOUT THE MS, WE FOLLOWED MATERIAL AND METHODS OF LAYTON ET AL 2020
+The following script aims to analyze exons obtained by target capture sequencing. Nudibranch mollusc species were sequenced using the bait set designed by XXX. We evaluated its effectiveness in gene recovery across broader phylogenetic clades by sequencing both taxa within the bait set's target scope and more divergent taxa. For this purpose, we partially followed the same methodology previously applied to nudibranchs by Layton et al. (2020) and XXXX. The software Hybpiper, designed for targeted sequence capture, was applyied for assembly and extract target genes and and a phylogenetic analysis was conducted. Further analyses for efficiency test were carried out in R using bait-to-target DNA distances and Hybpiper statistics.
+
+Citation: Paz-Sedano S., Valdes A., Stout C.C., Feliciano K., Muro S., Wilson N., Layton K., Goodheart J.A. 202X. Assessing the limits of exon capture efficiency for phylogenomics, using nudibranch gastropods (Mollusca: Heterobranchia) as a case study. 
 
 ## TRIMMOMATIC
 Trimmomatic v0.36 (Bolger, Lohse, & Usadel, 2014) was used to remove adapter sequences, exon capture reads with a quality score below 15 in a 4-bp sliding window, and reads shorter than 26 bp.
@@ -160,3 +162,6 @@ Once you have the concatenated nexus file:
 |-czb|Collapses nodes with bootstrap support less than 50%.|
 
 
+
+## REFERENCES
+Layton et al 2020
