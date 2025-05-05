@@ -130,3 +130,33 @@ Gene alignments were copied in different folders, Matrix_all, Matrix_25, Matrix_
 
 As a result, only the genes of interest remained, which were concatenated using IQtree.
 
+
+## IQTREE
+Individual gene alignments were concatenated for model testing and maximum Likelihood analyses in IQtree v2.3.5 (Nguyen et al. 2015) were performed with 1,500 ultrafast bootstrap (UFBoot) replicates, using MoldelFinder (Nguyen et al. 2015; Kalyaanamoorthy et al. 2017) to find the best-fitting model for each concatenated matrix and matrix subset. Nodes with bootstrap support less than 50% were collapsed. 
+
+IQ tree command will take your input of multiple sequence alignment and will reconstruct a phylogeny that is best explained by your input data. From version 2 you can input a directory of alignment files. IQ-TREE 2 will load and concatenate all alignments within the directory, eliminating the need for users to manually perform this step.
+
+      iqtree2 -p FOLDER_NAME --out-aln OUTFILE_NAME
+
+This will produce:
+
+•	OUTFILE_NAME: the concatenated alignment (default is phylip format)
+
+•	OUTFILE_NAME.nex: the partition file in nexus format
+
+•	OUTFILE_NAME.partitions: the partition file in RAxML format
+
+Optionally, you can add --out-format FASTA|NEXUS option to specify concatenated alignment format.
+Once you have the concatenated nexus file:
+
+      #!/bin/bash
+      iqtree -s alignment.nex -m MFP+MERGE -bb 1500 -czb -nt AUTO
+      
+|options|function|
+|:------|:-----|
+|-s|imput alignment file|
+|-m MFP+MERGE| Tells IQ-TREE to perform ModelFinder to find the best-fitting model and merge similar partitions based on a statistical test.|
+|-bb 1000|Indicates that 1000 ultrafast bootstrap replicates should be performed.|
+|-czb|Collapses nodes with bootstrap support less than 50%.|
+
+
