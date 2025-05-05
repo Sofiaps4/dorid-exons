@@ -1,8 +1,9 @@
 # SCRIPTS FOR TARGET CAPTURE ANALYSES
+## ABOUT
+ABOUT THE MS, WE FOLLOWED MATERIAL AND METHODS OF LAYTON ET AL 2020
 
 ## TRIMMOMATIC
 Trimmomatic v0.36 (Bolger, Lohse, & Usadel, 2014) was used to remove adapter sequences, exon capture reads with a quality score below 15 in a 4-bp sliding window, and reads shorter than 26 bp.
-
 
       #!/bin/bash
       for folder_name in */; do   
@@ -16,46 +17,39 @@ Trimmomatic v0.36 (Bolger, Lohse, & Usadel, 2014) was used to remove adapter seq
       cd ..;
       fi;
       done
-
--phred33 or -phred64 specifies the base quality encoding. If no quality encoding is specified, it will be determined automatically (since version 0.32). The prior default was -phred64. 
-
--threads indicates the number of threads to use, which improves performance on multi-core computers. If not specified, it will be chosen automatically.
-
-ILLUMINACLIP:<fastaWithAdaptersEtc>:<seed mismatches>:<palindrome clip threshold>:<simple clip threshold>
-
-LEADING:<quality> Remove low quality bases from the beginning. As long as a base has a value below this threshold the base is removed and the next base will be investigated
-
-quality: Specifies the minimum quality required to keep a base.
-
-TRAILING:<quality> Remove low quality bases from the end
-
-quality: Specifies the minimum quality required to keep a base.
-
-SLIDINGWINDOW:<windowSize>:<requiredQuality> 
-
-windowSize: specifies the number of bases to average across 
-
-requiredQuality: specifies the average quality required.
-
-MINLEN:<length> This module removes reads that fall below the specified minimal length.
+|options|function|
+|:------|:-----|
+|-threads|indicates the number of threads to use, which improves performance on multi-core computers. If not specified, it will be chosen automatically.|
+|-phred33 or -phred64|specifies the base quality encoding. If no quality encoding is specified, it will be determined automatically (since version 0.32). The prior default was -phred64.| 
+|ILLUMINACLIP| includes fasta with adapters, seed mismatches, palindrome clip threshold, simple clip threshold|
+|SLIDINGWINDOW| including windowSize and required quality| 
+|windowSize|specifies the number of bases to average across|
+|requiredQuality|specifies the average quality required.|
+|MINLEN|This module removes reads that fall below the specified minimal length.|
 
 ## HYBPIPER
-HybPiper v1.3.1 (Johnson et al., 2016) was employed to assemble the cleaned reads into contigs of the targeted regions of the genes. Briefly, the reads were mapped to a reference file of con-catenated bait sequences using Burrows-Wheeler Aligner (BWA) (Li& Durbin, 2009).
-HybPiper produced an unaligned fasta file for each gene, containing a DNA sequence for each sample, and a series of summary statistics. For example, Hybpiper uses BWA to map the reads to contigs to present a value for percent reads on target.Genes that did not enrich or enriched poorly (genes whose contigswere <50% of the reference) were removed (n = 125)
-FULL TUTORIAL: [hybpiper](https://github.com/mossmatters/HybPiper)
+Clean reads were analyzed using HybPiper v2.2.0 (Johnson et al. 2016). The full tutorial can be found at: [hybpiper](https://github.com/mossmatters/HybPiper)
 
 ### hybpiper assemble
 
-Assemble contigs and extract sequences. 
-To organize everything like the tutorial, create a folder called hybpiper_exon with all the clean reads
+Assemble contigs and extract sequences. To organize everything like the tutorial, create a folder called hybpiper_exon with all the clean reads.
+
 Create a namelist.txt with the names of all the samples
 
+      #!/bin/bash
       while read name; 
       do 
           hybpiper assemble -t_dna LN03_Ktar_chr_concatExonsDeduped_DNA.fasta -r ${name}_R1.fq.gz ${name}_R2.fq.gz --prefix ${name} --bwa; #change the name of your fasta file depending on the bait set name
       done < namelist.txt
 
---BWA, you need a NUCLEOTIDE target file. If you supply a nucleotide target file but omit the flag --bwa, HybPiper will translate your target file and map reads to targets using BLAST.
+|options|function|
+|:------|:-----|
+|-t|Target sequences file, which can be -t_dna for nucleotides and -t_aa for amino acids|
+|-r|cleaned read fileas as input|
+|--prefix|Prefix for sample name|
+|--BWA| BWA for assembly. It works with a NUCLEOTIDE target file. If you supply a nucleotide target file but omit the flag --bwa, HybPiper will translate your target file and map reads to targets using BLAST.|
+
+The BLASTx version of the pipeline (default) will map the reads to amino-acid target sequences. Although it is slower than the BWA version, it may have higher specificity. Reads may not align to divergent nucleotide target sequences, which are required for the BWA version. 
 
 The reads are distributed to separate directories, where they are assembled separately using SPAdes. The main output is a FASTA file of the (in frame) CDS portion of the sample for each target region, and a separate file with the translated protein sequence.
 
@@ -66,15 +60,73 @@ HybPiper will:
 4.	align the contigs to the target sequence, 
 5.	extract a coding sequence from each gene.
    
-Output from each of these phases is saved in a standardized directory hierarchy, making it easy for post-processing commands to summarize information across many samples.
-
-It creates one additional folder for each gene extracted for that specimen, where you can find fasta files of the outputs generated.
+Output from each of these phases is saved in a standardized directory hierarchy, making it easy for post-processing commands to summarize information across many samples. It creates one additional folder for each gene extracted for that specimen, where you can find fasta files of the outputs generated.
 
 ### hybpiper stats
 
 The parent directory contains one or more Base directories corresponding to the output of hybiper assemble for each sample. The descriptions below assume that the command hybpiper stats have been run from the parent directory.
 
+      #!/bin/bash
       hybpiper stats -t_dna LN03_Ktar_chr_concatExonsDeduped_DNA.fasta gene namelist.txt #change the name of your fasta file depending on the bait set name
 
+output:
 
+•	seq_lengths.tsv. A table in tab-separated-values format, containing the lengths of each recovered gene sequence for each sample, along with the mean sequence length for each gene within the target file. The name of this file can be changed using the parameter --seq_lengths_filename <filename>.
+
+•	hybpiper_stats.tsv. A table in tab-separated-values format, containing statistics on the HybPiper run. The name of this file can be changed using the parameter --stats_filename <filename>.
+
+Output files of hybpiper stats were used for further investigation on the target capture effectiveness CAN I INCLUDE HERE A LINK TO R ANALYSES?
+
+
+### hybpiper retrieve_sequences
+This command fetches either:
+1.	The sequences recovered from the same gene for all samples; generates an unaligned multi-FASTA file for each gene.
+2.	The sequences recovered from each gene for a single sample; generates a single multi-FASTA file.
+
+            #!/bin/bash
+            hybpiper retrieve_sequences -t_dna LN03_Ktar_chr_concatExonsDeduped_DNA.fasta dna --sample_names namelist.txt #change the name of your fasta file depending on the bait set name
+
+The resulted sequences were aligned, and trimmed, and phylogenetic analyses were carried out, following the tutorial [GeneTrees](https://hackmd.io/@mossmatters/SkXRVOdSc)
+
+## MAFFT
+   
+The resulting gene files were aligned using MAFFT v7 (Katoh & Standley, 2013). To be able to infer a phylogeny, we first need to align the sequences. MAFFT takes unaligned raw sequences and creates multiple sequence alignments of nucleotide sequences.
+
+      #!/bin/bash
+      for i in retrieve/*.FNA; do   
+      gene=$(basename $i | cut -f 1 -d .)
+
+      mafft --preservecase --maxiterate 1000 --localpair retrieve/$gene.*.FNA > MAFFT/$gene.mafft.fasta;
+      done
+
+
+## Trimal
+After aligning sequences, there will be spaces in between base pairs that need to be removed before building the tree. Trimal will remove any illegitimate or poorly aligned sections of the sequences.
+First, make a new directory named TRIMAL, mkdir TRIMAL for your trimal output files to be directed to.
+
+      #!/bin/bash
+      for i in MAFFT/*.mafft.fasta; do   
+      gene=$(basename $i | cut -f 1 -d .)
+      trimal -in MAFFT/$gene.mafft.fasta -out trimal/$gene.trimal.fasta;
+      done 
+      
+|options|function|
+|:------|:-----|
+|-in|Input fasta file|
+-out|Output trimmed fasta file|
+
+The resulted aligned and trimmed files are fasta files for each gene, inside which there are the sequences for each sample that has that gene. 
+We wanted to run phylogenetic analyses in different matrices with different occupancies, including in the matrix only those genes for which at least 25%, 50% and 75% of the taxa contained that gene. 
+Gene alignments were copied in different folders, Matrix_all, Matrix_25, Matrix_50 and Matrix_75. Then, the genes fasta files with a lower percentage of species of interest in the occupation were eliminated
+
+      for i in *.fasta; do 
+      gene=$(basename "$i") 
+      count=$(grep -o ">" "$i" | wc -l)
+       echo "$gene: $count" 
+      if [ "$count" -lt #number-occupancy ]; then #change the number depending on the % of occupancy you are interested in
+      rm "$i" 
+      fi
+      done
+
+As a result, only the genes of interest remained, which were concatenated using IQtree.
 
