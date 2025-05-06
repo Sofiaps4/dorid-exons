@@ -1,14 +1,31 @@
 # EFFICIENCY ANALYSES
+## Visualize stats
+To observe if the capture efficiency differs among taxa, descriptive statistics were performed, [descriptive_statistic.R](https://github.com/Sofiaps4/dorid-exons/blob/main/efficiency_analyses/descriptive_statistic.R)
 
-To observe if the capture efficiency differs among taxa, descriptive statistics were performed, [descriptive_statistic.R](https://github.com/Sofiaps4/dorid-exons/blob/main/efficiency_analyses/descriptive_statistic.R), exploring whether sensitivity (percentage of genes) and specificity (percentage of reads that map to targets) vary depending on the taxa. 
-The number of genes for each taxa, as well as percentage of reads that map to targets (expressed as PctOnTarget) are obtained during hybpiper stats analyses, file hybpiper_stats.tsv
+The analysis focused on sensitivity (percentage of genes recovered) and specificity (percentage of reads mapping to targets, expressed as PctOnTarget), based on outputs from the hybpiper stats analysis, specifically the hybpiper_stats.tsv file.
+
+Hybpiper stat output seq_lengths.tsv was used for plot the percentage of genes recovered at different proportions of sequence length relative to the bait set, classified by suborder [barplot_percents_lengths.py](https://github.com/Sofiaps4/dorid-exons/blob/main/efficiency_analyses/barplot_percents_lengths.py)
+
+    python barplot_percents_lengths.py
+
+## Correlation analyses
 
 To investigated the hypotheses of whether capture sensitivity or capture specificity are correlated to the bait-to-target DNA distance we calculate the genetic distances.
+
+### Calculate bait-to-target DNA distance
+
 The bait set includes sequences for the same gene from different species. However, the specific sequence in the bait set used for recovery of target genes can be seen in the Exonerate output during the extraction and assembly of exons in Hybpiper. 
-To first obtain the bait-to-target DNA distance, we observed which of the baits comprising the bait set was used to extract each gene for each species. A list was created that associated each bait with the target [list_target_genes.sh](https://github.com/Sofiaps4/dorid-exons/blob/main/efficiency_analyses/list_target_genes.sh)
 
-The output list species_gene_headers.txt are the input of the following [calculate_distances.sh](https://github.com/Sofiaps4/dorid-exons/blob/main/efficiency_analyses/calculate_distances.sh)
-This script generates a temporal alignment using MAFFT of each target gene extracted for each species, resulting from Hybpiper Retrieve, with the gene from the baitset used for its retrieve. 
-Uncorrected pairwise distances were calculated, excluding gaps and missing data, and the average of the distances obtained was obtained, establishing it as the genetic distance of the species with the bait set. 
+First, we observed which of the baits comprising the bait set was used to extract each gene for each species. A list was created that associated each bait with the target [list_target_genes.sh](https://github.com/Sofiaps4/dorid-exons/blob/main/efficiency_analyses/list_target_genes.sh)
 
-The hypotheses of whether capture sensitivity or capture specificity are correlated to the bait-to-target DNA distance were investigated using R, using the non-parametric Kendall rank correlation coefficient test.
+The output list species_gene_headers.txt are the input for [calculate_distances.sh](https://github.com/Sofiaps4/dorid-exons/blob/main/efficiency_analyses/calculate_distances.sh) script.
+
+This script generates a temporal alignment using MAFFT, comparing each target gene retrieved for a species (via HybPiper Retrieve) with its corresponding gene from the bait set. Uncorrected pairwise distances were calculated, excluding gaps and missing data, are then calculated. The average of these distances is taken as the genetic distance between each species and the bait set.
+
+### Correlation tests.
+
+The hypotheses of whether capture sensitivity or capture specificity are correlated to the bait-to-target DNA distance were investigated using R: [correlation_analyses](https://github.com/Sofiaps4/dorid-exons/tree/main/efficiency_analyses)
+
+
+using the non-parametric Kendall rank correlation coefficient test.
+
