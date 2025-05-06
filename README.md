@@ -92,7 +92,7 @@ output:
 
 •	hybpiper_stats.tsv. A table in tab-separated-values format, containing statistics on the HybPiper run. The name of this file can be changed using the parameter --stats_filename <filename>.
 
-Output files of hybpiper stats were used for further investigation on the target capture efficiency CAN I INCLUDE HERE A LINK TO R ANALYSES?
+Output files of hybpiper stats were used for further investigation on the target capture efficiency [efficiency_analyses](https://github.com/Sofiaps4/dorid-exons/tree/main/efficiency_analyses)
 
 
 ### hybpiper retrieve_sequences
@@ -103,9 +103,4 @@ This command fetches either:
             #!/bin/bash
             hybpiper retrieve_sequences -t_dna LN03_Ktar_chr_concatExonsDeduped_DNA.fasta dna --sample_names namelist.txt #change the name of your fasta file depending on the bait set name
 
-
-
-## REFERENCES
-(Bolger, Lohse, & Usadel, 2014) 
-(Johnson et al. 2016)
-Layton et al 2020
+The retrieved sequences were used as input files for further [phylogenetic analyses](https://github.com/Sofiaps4/dorid-exons/tree/main/phylogeny) as well as calculate bait-to-target DNA distances for [efficiency_analyses](https://github.com/Sofiaps4/dorid-exons/tree/main/efficiency_analyses)
