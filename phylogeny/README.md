@@ -29,6 +29,7 @@ First, make a new directory named TRIMAL, mkdir TRIMAL for your trimal output fi
 |-in|Input fasta file|
 -out|Output trimmed fasta file|
 
+### Occupancy matrix
 The resulted aligned and trimmed files are fasta files for each gene, inside which there are the sequences for each sample that has that gene. 
 We wanted to run phylogenetic analyses in different matrices with different occupancies, including in the matrix only those genes for which at least 25%, 50% and 75% of the taxa contained that gene. 
 Gene alignments were copied in different folders, Matrix_all, Matrix_25, Matrix_50 and Matrix_75. Then, the genes fasta files with a lower percentage of species of interest in the occupation were eliminated
