@@ -62,7 +62,7 @@ Outputs are saved in a standardized directory hierarchy, making it easy for post
 The parent directory contains one or more Base directories corresponding to the output of hybiper assemble for each sample. The descriptions below assume that the command hybpiper stats have been run from the parent directory.
 
       #!/bin/bash
-      hybpiper stats -t_dna LN03_Ktar_chr_concatExonsDeduped_DNA.fasta gene namelist.txt #change the name of your fasta file depending on the bait set name
+      hybpiper stats -t_dna BaitSetName.fasta gene namelist.txt #change the name of your fasta file depending on the bait set name
 
 Output files:
 
@@ -79,6 +79,6 @@ This command fetches either:
 2.	The sequences recovered from each gene for a single sample; generates a single multi-FASTA file.
 
             #!/bin/bash
-            hybpiper retrieve_sequences -t_dna LN03_Ktar_chr_concatExonsDeduped_DNA.fasta dna --sample_names namelist.txt #change the name of your fasta file depending on the bait set name
+            hybpiper retrieve_sequences -t_dna BaitSetName.fasta dna --sample_names namelist.txt #change the name of your fasta file depending on the bait set name
 
 The retrieved sequences were used as input files for further [phylogenetic analyses](https://github.com/Sofiaps4/dorid-exons/tree/main/phylogeny) as well as calculate bait-to-target DNA distances for [efficiency_analyses](https://github.com/Sofiaps4/dorid-exons/tree/main/efficiency_analyses)
