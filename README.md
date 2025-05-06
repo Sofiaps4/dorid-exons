@@ -1,25 +1,26 @@
 # TARGET CAPTURE ANALYSES
 ## ABOUT
-The following script aims to analyze exons obtained by target capture sequencing. Nudibranch mollusc species were sequenced using the bait set designed by XXX. We evaluated its effectiveness in gene recovery across broader phylogenetic clades by sequencing both taxa within the bait set's target scope and more divergent taxa. For this purpose, we partially followed the same methodology previously applied to nudibranchs by Layton et al. (2020) and XXXX. The software Hybpiper, designed for targeted sequence capture, was applyied for assembly and extract target genes and and a phylogenetic analysis was conducted. Further analyses for efficiency test were carried out in R using bait-to-target DNA distances and Hybpiper statistics.
+The following script aims to analyze exons obtained by target capture sequencing. Nudibranch mollusc species were sequenced using the bait set designed by XXX for the suborder Doridina. We evaluated its efficiency in gene recovery across broader phylogenetic clades by sequencing both Doridina taxa within the bait set's target scope and more divergent taxa belonging to the suborder Cladobranchia. For this purpose, we partially followed the methodology previously applied to nudibranchs by Layton et al. (2020) and XXXX. The software Hybpiper, designed for targeted sequence capture, was applyied for assembly and extract target genes, and a phylogenetic analysis was conducted. Further analyses for efficiency test were carried out in R, studing the correlation between bait-to-target DNA distances and Hybpiper statistics.
 
 Citation: Paz-Sedano S., Valdes A., Stout C.C., Feliciano K., Muro S., Wilson N., Layton K., Goodheart J.A. 202X. Assessing the limits of exon capture efficiency for phylogenomics, using nudibranch gastropods (Mollusca: Heterobranchia) as a case study. 
 
 ## REQUIREMENTS
 The following analyses requires the installation of: 
-- Trimmomatic
+- Trimmomatic https://github.com/timflutre/trimmomatic
 - Hybpiper https://github.com/mossmatters/HybPiper
-- Trimal
+- trimAl https://vicfero.github.io/trimal/
 - IQtree http://www.iqtree.org
 
 Software required for the analyses was managed and installed using Conda
 Installing HybPiper using conda with a new environment will install HybPiper, all required Python packages, and all required external programs. If you have conda installed and the channels bioconda and conda-forge have already been added, this can be done using the command:
+
       conda install -c bioconda trimmomatic
-      conda create -n hybpiper hybpiper
+      conda install hybpiper
       conda install bioconda::trimal
       conda install bioconda::iqtree
 
 ## TRIMMOMATIC
-Trimmomatic v0.36 (Bolger, Lohse, & Usadel, 2014) was used to remove adapter sequences, exon capture reads with a quality score below 15 in a 4-bp sliding window, and reads shorter than 26 bp.
+Trimmomatic v0.36 was used to remove adapter sequences, exon capture reads with a quality score below 15 in a 4-bp sliding window, and reads shorter than 26 bp.
 
       #!/bin/bash
       for folder_name in */; do   
@@ -44,7 +45,7 @@ Trimmomatic v0.36 (Bolger, Lohse, & Usadel, 2014) was used to remove adapter seq
 |MINLEN|This module removes reads that fall below the specified minimal length.|
 
 ## HYBPIPER
-Clean reads were analyzed using HybPiper v2.2.0 (Johnson et al. 2016). The full tutorial can be found at: [hybpiper](https://github.com/mossmatters/HybPiper)
+Clean reads were analyzed using HybPiper v2.2.0. The full tutorial can be found at: [hybpiper](https://github.com/mossmatters/HybPiper)
 
 ### hybpiper assemble
 
