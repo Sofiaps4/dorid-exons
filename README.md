@@ -38,5 +38,7 @@ Installing HybPiper using conda with a new environment will install HybPiper, al
 
 ### Contact
 Sofia Paz Sedano
+
 Postdoctoral fellow at American Museum of Natural History
+
 email: spazsedano@amnh.org
