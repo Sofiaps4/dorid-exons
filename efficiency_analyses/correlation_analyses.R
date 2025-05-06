@@ -244,3 +244,58 @@ gg_plot <- ggplot(merged_data, aes(x = Mean_PDistance, y = PctOnTarget, color = 
 # Save the plot with a white background
 ggsave("ggplot_distancevsPctOnTarget_color.png", plot = gg_plot, width = 8.5, height = 6, dpi = 300)
 ggsave("ggplot_distancevsPctOnTarget_color.pdf", plot = gg_plot, width = 8.5, height = 6, dpi = 300)
+
+###I saw also differences in the reads, let's see if there is a correlation between number of exons and initial reads
+
+#Read data
+stats <- read.csv("D:/Sofi/Desktop/sofia/AMNH - postdoc/jessica's Lab/Postdoc project/4. target capture valdes et al/results/nucleotides_new_baitset/hybpiper_stats_new_baitset.csv", header = TRUE, sep = ",", row.names = 1)
+
+stats$Species <- rownames(stats)
+Number_reads <- stats[, c("Species", "NumReads")]  # extract Species + NumReads
+merged_data <- merge(data, Number_reads, by = "Species")
+
+write.csv(merged_data, "merged_data.csv", row.names = FALSE)
+merged_data$sensitivity <- (merged_data$genesExtracted / 304) * 100 #304 is the number of genes in my baitset
+
+#####excluding Layton et al 2020 species:
+
+species_to_remove <- c("Ardeadoris_egretta", "Chromodoris_magnifica", "Chromodoris_westraliensis", "Doriprismatica_atromarginata", "Goniobranchus_fidelis")
+
+merged_data <- merged_data[!merged_data$Species %in% species_to_remove, ]
+
+####test normality
+
+# Shapiro-Wilk test for normality
+shapiro.test(merged_data$NumReads)
+
+#no normal
+
+# Perform Kendall rank correlation test
+kendall_correlation_result <- cor.test(merged_data$NumReads, merged_data$sensitivity, method = "kendall")
+
+# Print the Kendall correlation result
+print(kendall_correlation_result)
+
+# Set Superfamily factor order based on Superfamily's appearance in merged_data (for legend order)
+sf_order <- unique(data2$Superfamily[order(data2$Species)])
+
+# Reorder Superfamily factor to match the desired order
+merged_data$Superfamily <- factor(merged_data$Superfamily, levels = sf_order)
+
+# Create the ggplot object with a white background
+gg_plot <- ggplot(merged_data, aes(x = NumReads, y = sensitivity, color = Superfamily)) +
+  geom_point(size = 4, alpha = 0.5) +
+  #geom_smooth(method = "loess", color = "black", se = FALSE) +
+  labs(title = paste("Kendall Rank Correlation between %genesExtracted and NumberReads (τ =", round(kendall_correlation_result$estimate, 2), ")"),
+       x = "Number of Reads", y = "% Genes Extracted") +
+  theme_minimal() +  # Minimal theme with white background
+  scale_color_manual(values = color_mapping, guide = guide_legend(reverse = TRUE)) +
+  theme(panel.background = element_rect(fill = "white"),  # Ensure the plot background is white
+        plot.background = element_rect(fill = "white"),    # Ensure the overall background is white
+        legend.background = element_rect(fill = "white"),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 13))  # Optional: make legend background white
+
+# Save the plot with a white background
+ggsave("ggplot_readsvsexonsperct_colors.png", plot = gg_plot, width = 8, height = 6, dpi = 300)
+ggsave("ggplot_readsvsexonsperct_colors.pdf", plot = gg_plot, width = 8, height = 6, dpi = 300)
