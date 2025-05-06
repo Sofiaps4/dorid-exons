@@ -35,3 +35,8 @@ Installing HybPiper using conda with a new environment will install HybPiper, al
 - [Phylogeny](https://github.com/Sofiaps4/dorid-exons/tree/main/phylogeny): for phylogenetics analyses using extracted genes as input, including aligning with MAFFT, trimming alignments with TrimAl and infer Maximum Likelihood with IQtree.
 
 - [Efficiency_analyses](https://github.com/Sofiaps4/dorid-exons/tree/main/efficiency_analyses): for statistics analyses of capture efficiency using R.
+
+### Contact
+Sofia Paz Sedano
+Postdoctoral fellow at American Museum of Natural History
+email: spazsedano@amnh.org
