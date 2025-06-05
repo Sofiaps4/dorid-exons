@@ -155,6 +155,74 @@ ggsave("ggplot_piecewise_percentage_color.pdf", plot = gg_plot, width = 8, heigh
 ggsave("ggplot_piecewise_percentage_color.png", plot = gg_plot, width = 8, height = 6, dpi = 300)
 
 
+#####To see relation between genetic distance of a gene and its percentage length
+
+library(tidyverse)
+
+# 1. Load gene length table
+length_df <- read.delim("D:/Sofi/Desktop/sofia/AMNH - postdoc/jessica's Lab/Postdoc project/4. target capture valdes et al/results/nucleotides_new_baitset/seq_lengths - renamed3.tsv", check.names = FALSE)
+
+
+
+# 1. Load raw data without row.names to inspect
+raw <- read.delim("D:/Sofi/Desktop/sofia/AMNH - postdoc/jessica's Lab/Postdoc project/4. target capture valdes et al/results/nucleotides_new_baitset/seq_lengths - renamed3.tsv", header = FALSE, check.names = FALSE)
+
+# 2. Extract gene IDs from column 1, and fix headers
+gene_ids <- as.character(unlist(raw[1, 3:ncol(raw)]))
+
+mean_lengths <- as.numeric(unlist(raw[2, 3:ncol(raw)]))
+names(mean_lengths) <- gene_ids
+
+# 4. Extract species info and lengths (starting from row 3)
+species_info <- raw[3:nrow(raw), 1:2]
+colnames(species_info) <- c("Suborder", "Species")
+
+length_data <- raw[3:nrow(raw), 3:ncol(raw)]
+colnames(length_data) <- gene_ids
+length_data[] <- lapply(length_data, as.numeric)
+
+# 5. Combine species info and gene lengths
+length_df <- cbind(species_info, length_data)
+
+# 6. Calculate percentage length per gene
+percent_df <- as.data.frame(sweep(length_df[, -(1:2)], 2, mean_lengths, FUN = "/") * 100)
+
+# 7. Combine again with species info
+percent_df <- cbind(length_df[, 1:2], percent_df)
+
+# 8. Convert to long format for plotting
+percent_long <- melt(percent_df, id.vars = c("Suborder", "Species"), 
+                     variable.name = "Gene", value.name = "PercentLength")
+
+# 10. Melt distance_df: Gene × Species × Distance
+dist_long <- melt(as.matrix(distance_df), varnames = c("Gene", "Species"), value.name = "Distance")
+
+# 11. Merge both dataframes on Gene and Species
+merged_df <- merge(percent_long, dist_long, by = c("Gene", "Species"))
+
+# 12. Plot
+p <- ggplot(merged_df, aes(x = Distance, y = PercentLength, color = Suborder)) +
+  geom_point(alpha = 0.3) +
+  scale_color_manual(values = c("Doridina" = "deeppink", "Cladobranchia" = "purple", "Outgroup" = "grey")) +
+  theme_minimal() +
+  labs(x = "Genetic Distance", y = "% of Mean Length", title = "% Length vs. Genetic Distance") +
+  theme(text = element_text(size = 14))
+
+# Save to PDF
+pdf("length_distance.pdf", width = 13, height = 10)
+print(p)
+dev.off()
+
+# Save to PNG
+png("length_distance.png", width = 13, height = 10, units = "in", res = 300)
+print(p)
+dev.off()
+
+# Save to SVG
+svg("length_distance.svg", width = 13, height = 10)
+print(p)
+dev.off()
+
 ############what about the correlation between PcTOnTarget and distances
 
 merged_data$PctOnTarget <- specif$PctOnTarget[match(merged_data$Species, specif$Species)]
