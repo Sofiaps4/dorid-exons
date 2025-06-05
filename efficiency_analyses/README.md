@@ -2,6 +2,7 @@
 To investigate the dataset's capture efficiency across divergent species, we observed variations in different parameters depending on the suborder and superfamily to which they belonged, including variations in:
 
 - sensitivity (percentage of genes recovered)
+- presence/absence of genes
 - specificity (percentage of reads mapping to targets)
 - bait-to-target DNA distances
 - sequence length of genes relative to the bait set.
@@ -43,6 +44,7 @@ The workflow performs the following steps:
 - Evaluates the correlation between genetic distance and sensitivity using Kendall’s rank correlation test
 
 - Applies piecewise (segmented) regression to model the relationship between distance and sensitivity
+- Graphically plot the relationship between the genetic distance of a specific gene and its percentage length, differentiating between Cladobranchia, Doridina and outgroups
 
 - Assesses the correlation between genetic distance and specificity using Kendall’s rank correlation test using the non-parametric Kendall rank correlation coefficient test.
 
