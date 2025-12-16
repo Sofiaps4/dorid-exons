@@ -106,6 +106,7 @@ ggsave("ggplot_distancevsgenes_color.png", plot = gg_plot, width = 8.5, height =
 ggsave("ggplot_distancevsgenes_color.pdf", plot = gg_plot, width = 8.5, height = 6, dpi = 300)
 
 ###My genes decrease, but when? Is there a specific genetic distance after which exon numbers start to drop off more quickly?
+#I can see in the plot that it is not completely linear
 
 ##more clean, only one line with two clear linear trends, one before and one after the break. with a single breakpoint
 #Piecewise (Segmented) Regression
@@ -122,8 +123,25 @@ merged_data$sensitivity <- (merged_data$genesExtracted / 304) * 100 #304 is the 
 # Fit initial linear model
 lm_fit <- lm(sensitivity ~ Mean_PDistance, data = merged_data)
 
+#Statistic test for no-linearity - Davies test
+
+library(segmented)
+
+davies_result <- davies.test(
+  lm_fit,
+  seg.Z = ~ Mean_PDistance
+)
+
+print(davies_result)
+
+##'best' identifies where the slope changes, with a low p-value - evidence against the null hypothesis of a single linear correlation. 
+#So, continue with the pairwise correlation analysis.
+
 # Fit segmented regression with one breakpoint
 seg_fit <- segmented(lm_fit, seg.Z = ~Mean_PDistance)
+
+#Confident inverval of breakpoint
+confint(seg_fit)
 
 # View estimated breakpoint
 summary(seg_fit)
