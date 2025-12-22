@@ -82,3 +82,19 @@ This command fetches either:
             hybpiper retrieve_sequences -t_dna BaitSetName.fasta dna --sample_names namelist.txt #change the name of your fasta file depending on the bait set name
 
 The retrieved sequences were used as input files for further [phylogenetic analyses](https://github.com/Sofiaps4/dorid-exons/tree/main/phylogeny) as well as calculate bait-to-target DNA distances for [efficiency_analyses](https://github.com/Sofiaps4/dorid-exons/tree/main/efficiency_analyses)
+
+
+#####NOTES NOT FINISHED
+TO FILTER FOR POSSIBLE CONTAMINATIONS, PARALOGS AND GENERAL OUTLIERS DURING ASSEMBLY AND RETRIEVE STEPS, WE RUN PHYLTER SOFTWARE (xxWEBxx). PHYLTER USE a collection of gene trees TO LOOK FOR OUTLIERS, SPECIFIC GENE IN AN SPECIFIC TAXON. THE IMPUT IS THE TREE SO WE FIRST RUN IQTREE FOR GENE TREES, aligned in mafft after retrieve
+
+for gene in MAFFT/*.fasta.gz; do
+    base=$(basename "$gene" .FNA.gz)
+
+    gunzip -c "$gene" > tmp_fna/$base.FNA
+
+    iqtree2 \
+      -s tmp_fna/$base.FNA \
+      -m MFP \
+      -nt AUTO \
+      -pre gene-trees/$base/$base
+done
