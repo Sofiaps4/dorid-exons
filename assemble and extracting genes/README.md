@@ -84,17 +84,22 @@ This command fetches either:
 The retrieved sequences were used as input files for further [phylogenetic analyses](https://github.com/Sofiaps4/dorid-exons/tree/main/phylogeny) as well as calculate bait-to-target DNA distances for [efficiency_analyses](https://github.com/Sofiaps4/dorid-exons/tree/main/efficiency_analyses)
 
 
-#####NOTES NOT FINISHED
-TO FILTER FOR POSSIBLE CONTAMINATIONS, PARALOGS AND GENERAL OUTLIERS DURING ASSEMBLY AND RETRIEVE STEPS, WE RUN PHYLTER SOFTWARE (xxWEBxx). PHYLTER USE a collection of gene trees TO LOOK FOR OUTLIERS, SPECIFIC GENE IN AN SPECIFIC TAXON. THE IMPUT IS THE TREE SO WE FIRST RUN IQTREE FOR GENE TREES, aligned in mafft after retrieve
+### FILTERING OUTLIERS
 
-for gene in MAFFT/*.fasta.gz; do
-    base=$(basename "$gene" .FNA.gz)
+To filter possible contaminations, paralogs and general outlier genes obtained during the assembly and retrieve steps, we run [phylTER](https://github.com/damiendevienne/phylter) tool in R. phylTER use a collection of gene trees to look for outliers, selecting specific gene in a specific taxon. It use a collection of gene trees as an input data. Therefore, we first run IQtree for gene trees. Retrieved sequences were aligned using MAFFT v7 (Katoh & Standley, 2013).
 
-    gunzip -c "$gene" > tmp_fna/$base.FNA
+## MAFFT
 
-    iqtree2 \
-      -s tmp_fna/$base.FNA \
-      -m MFP \
-      -nt AUTO \
-      -pre gene-trees/$base/$base
-done
+ #!/bin/bash
+
+ for gene in MAFFT/*.fasta.gz; do
+     base=$(basename "$gene" .FNA.gz)
+
+     gunzip -c "$gene" > tmp_fna/$base.FNA
+
+     iqtree2 \
+       -s tmp_fna/$base.FNA \
+       -m MFP \
+       -nt AUTO \
+       -pre gene-trees/$base/$base
+ done
