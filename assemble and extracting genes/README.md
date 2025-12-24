@@ -84,22 +84,41 @@ This command fetches either:
 The retrieved sequences were used as input files for further [phylogenetic analyses](https://github.com/Sofiaps4/dorid-exons/tree/main/phylogeny) as well as calculate bait-to-target DNA distances for [efficiency_analyses](https://github.com/Sofiaps4/dorid-exons/tree/main/efficiency_analyses)
 
 
+
 ### FILTERING OUTLIERS
 
-To filter possible contaminations, paralogs and general outlier genes obtained during the assembly and retrieve steps, we run [phylTER](https://github.com/damiendevienne/phylter) tool in R. phylTER use a collection of gene trees to look for outliers, selecting specific gene in a specific taxon. It use a collection of gene trees as an input data. Therefore, we first run IQtree for gene trees. Retrieved sequences were aligned using MAFFT v7 (Katoh & Standley, 2013).
+To filter possible contaminations, paralogs and general outlier genes obtained during the assembly and retrieve steps, we run [phylTER](https://github.com/damiendevienne/phylter) tool in R. phylTER use a collection of gene trees to look for outliers, selecting specific gene in a specific taxon. It use a collection of gene trees as an input data. Therefore, we first aligned retrieved sequences using MAFFT v7 (Katoh & Standley, 2013) and
+run IQtree v2.3.5 (Nguyen et al. 2015) for gene trees, using MoldelFinder (Kalyaanamoorthy et al. 2017) to find the best-fitting model for each gene.  
+
 
 ## MAFFT
 
- #!/bin/bash
+         #!/bin/bash
+         for gene in MAFFT/*.fasta.gz; do
+          base=$(basename "$gene" .FNA.gz)
+          gunzip -c "$gene" > tmp_fna/$base.FNA
+         iqtree2 \
+          -s tmp_fna/$base.FNA \
+          -m MFP \
+          -nt AUTO \
+          -pre gene-trees/$base/$base
+        done
 
- for gene in MAFFT/*.fasta.gz; do
-     base=$(basename "$gene" .FNA.gz)
+## IQtree
 
-     gunzip -c "$gene" > tmp_fna/$base.FNA
+         #!/bin/bash
+         for gene in MAFFT/*.fasta.gz; do
+         # Clean base name
+           base=$(basename "$gene" .fasta.gz)
+         # Decompress to temporary folder
+           gunzip -c "$gene" > tmp_fna/$base.fasta
+         # Run IQ-TREE
+            mkdir -p gene-trees/$base  # ensure folder exists
+           iqtree2 \
+           -s tmp_fna/$base.fasta \
+           -m MFP \
+           -nt AUTO \
+           -pre gene-trees/$base/$base
+      done
 
-     iqtree2 \
-       -s tmp_fna/$base.FNA \
-       -m MFP \
-       -nt AUTO \
-       -pre gene-trees/$base/$base
- done
+The resulting gene trees were used as input for removing outliers in [phylTER](https://github.com/Sofiaps4/dorid-exons/blob/main/assemble%20and%20extracting%20genes/phylTER.R), run in R. Resulted outliers were removed from the initial retrieved data using the following code [filger_outliers](https://github.com/Sofiaps4/dorid-exons/blob/main/assemble%20and%20extracting%20genes/filter_outliers.py). These filtered genes were used for further [phylogenetic](https://github.com/Sofiaps4/dorid-exons/tree/main/phylogeny) and [capture efficiency](https://github.com/Sofiaps4/dorid-exons/tree/main/efficiency_analyses) analyses. 
