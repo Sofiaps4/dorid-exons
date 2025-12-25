@@ -47,7 +47,7 @@ color_mapping <- sapply(names(base_colors), function(sf) {
   } else if (suborder == "Cladobranchia") {
     darken(base_colors[sf], amount = 0.3)
   } else {
-    "grey60"
+    "grey20"
   }
 })
 
