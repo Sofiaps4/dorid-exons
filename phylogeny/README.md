@@ -75,3 +75,7 @@ Once you have the concatenated nexus file:
 |-bb 1000|Indicates that 1000 ultrafast bootstrap replicates should be performed.|
 |-czb|Collapses nodes with bootstrap support less than 50%.|
 
+
+### Matrix Stats.
+Summary statistics for the different occupancy matrices were calculated using the [Alignment_assessment](https://github.com/dportik/Alignment_Assessment) tool from (Portik et al., 2016). 
+
