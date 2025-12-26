@@ -39,11 +39,14 @@ The workflow performs the following steps:
 
 - Computes the mean of the genetic distances obtained
 
-- Assesses the normality of parameters using the Shapiro-Wilk test
+- Assesses the normality of parameters using the Shapiro-Wilk test (we will test genetic distances, sensitivity and specificity)
 
-- Evaluates the correlation between genetic distance and sensitivity using Kendall’s rank correlation test
+- Evaluates the correlation between genetic distance and sensitivity/specificity using Kendall’s rank correlation test}
+
+- For the case of sensitivity, Daviest test was carried out to test evidence for a change in slope (there was a change and it continues with piecewise regression)
 
 - Applies piecewise (segmented) regression to model the relationship between distance and sensitivity
+
 - Graphically plot the relationship between the genetic distance of a specific gene and its percentage length, differentiating between Cladobranchia, Doridina and outgroups
 
 - Assesses the correlation between genetic distance and specificity using Kendall’s rank correlation test using the non-parametric Kendall rank correlation coefficient test.
