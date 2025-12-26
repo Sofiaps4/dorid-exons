@@ -53,3 +53,4 @@ The workflow performs the following steps:
 
 This workflow also assess the correlation between number of initial reads included in the analyses and percentage of genes extracted, to investigate if the sensitivity could be related with input sequences more than genetic distances.
 
+ In addition, to confirm that the observed correlations are not inflated by non-independence among taxa Phylogenetic Generalized Least Squares (PGLS) analyses were performed in R, following this [tutorial](https://lukejharmon.github.io/ilhabela/instruction/2015/07/03/PGLS/) and including some modifications [PGLS](https://github.com/Sofiaps4/dorid-exons/blob/main/efficiency_analyses/Phylogenetic%20Generalized%20Least%20Squares.R)
