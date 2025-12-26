@@ -82,7 +82,7 @@ merged_data$Superfamily <- factor(merged_data$Superfamily, levels = names(color_
 merged_data$Species <- factor(merged_data$Species, levels = unique(merged_data$Species))
 
 # Set Superfamily factor order based on Superfamily's appearance in merged_data (for legend order)
-sf_order <- unique(data2$Superfamily[order(data2$Species)])
+sf_order <- unique(data$Superfamily[order(data$Species)])
 
 # Reorder Superfamily factor to match the desired order
 merged_data$Superfamily <- factor(merged_data$Superfamily, levels = sf_order)
