@@ -180,8 +180,6 @@ library(tidyverse)
 # 1. Load gene length table
 length_df <- read.delim("D:/Sofi/Desktop/sofia/AMNH - postdoc/jessica's Lab/Postdoc project/4. target capture valdes et al/results/nucleotides_new_baitset/seq_lengths - renamed3.tsv", check.names = FALSE)
 
-
-
 # 1. Load raw data without row.names to inspect
 raw <- read.delim("D:/Sofi/Desktop/sofia/AMNH - postdoc/jessica's Lab/Postdoc project/4. target capture valdes et al/results/nucleotides_new_baitset/seq_lengths - renamed3.tsv", header = FALSE, check.names = FALSE)
 
@@ -212,8 +210,12 @@ percent_df <- cbind(length_df[, 1:2], percent_df)
 percent_long <- melt(percent_df, id.vars = c("Suborder", "Species"), 
                      variable.name = "Gene", value.name = "PercentLength")
 
+
+distance <- read.csv("D:/Sofi/Desktop/sofia/AMNH - postdoc/jessica's Lab/Postdoc project/4. target capture valdes et al/results/nucleotides_new_baitset/p_distance_matrix-nogap_R1.csv", header = TRUE, sep = ",", row.names = 1)
+distance[] <- lapply(distance, as.numeric)
+
 # 10. Melt distance_df: Gene × Species × Distance
-dist_long <- melt(as.matrix(distance_df), varnames = c("Gene", "Species"), value.name = "Distance")
+dist_long <- melt(as.matrix(distance), varnames = c("Gene", "Species"), value.name = "Distance")
 
 # 11. Merge both dataframes on Gene and Species
 merged_df <- merge(percent_long, dist_long, by = c("Gene", "Species"))
