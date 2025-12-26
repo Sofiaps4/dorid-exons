@@ -113,7 +113,7 @@ rownames(annotation_col) <- species_names
 suborder_colors <- c(
   "Doridina" = "pink",
   "Cladobranchia" = "purple",
-  "Outgroup" = "gray"
+  "Outgroup" = "gray20"
 )
 annotation_colors <- list(Suborder = suborder_colors)
 
@@ -172,33 +172,6 @@ gene_names <- rownames(presence_matrix)
 # Create color vector for gene labels
 gene_label_colors <- ifelse(gene_names %in% teasdale_genes, "red", "black")
 
-# Define annotation bar for species
-library(ComplexHeatmap)
-
-ha_column <- HeatmapAnnotation(
-  Suborder = annotation_col$Suborder,
-  col = list(Suborder = c(
-    "Doridina" = "pink",
-    "Cladobranchia" = "purple",
-    "Outgroup" = "gray"
-  )),
-  annotation_name_side = "left"
-)
-
-svg("heatmap_with_teasdale.svg", width = 13, height = 30)
-Heatmap(presence_matrix,
-        name = "Presence",
-        col = c("0" = "white", "1" = "darkblue"),
-        cluster_rows = FALSE,
-        cluster_columns = FALSE,
-        show_column_names = TRUE,
-        column_names_gp = gpar(fontsize = 8),
-        row_names_gp = gpar(fontsize = 7, col = gene_label_colors),
-        top_annotation = ha_column,
-        show_row_names = TRUE)
-dev.off()
-
-##improved teasdale matrix
 
 # 2. Update presence matrix: 0 = absent, 1 = present non-Teasdale, 2 = present Teasdale
 modified_matrix <- presence_matrix  # Copy original matrix
